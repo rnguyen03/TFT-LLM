@@ -52,15 +52,12 @@ def get_match_ids(puuids):
 
     for puuid in puuids:
         url = f'https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/{puuid}/ids?count=100'
-        headers = {
-            "X-Riot-Token": API_KEY
-        }
 
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=HEADERS)
         if response.status_code == 200:
             match_data = response.json()
             match_ids.update(match_data)
-            print(f"Successfully fetched match data for puuid {puuid}!")
+            print(f"Successfully fetched match data for puuid {puuid}")
         else:
             print(f"Error fetching match data for puuid {puuid}: {response.status_code}")
             print(response.json())
@@ -73,16 +70,18 @@ def get_match_data(match_ids):
 
     for match_id in match_ids:
         url = f'https://americas.api.riotgames.com/tft/match/v1/matches/{match_id}'
-        headers = {
-            "X-Riot-Token": API_KEY
-        }
 
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=HEADERS)
         # Check if the request was successful
         if response.status_code == 200:
             match_data = response.json()
-            matches.append(match_data)
-            print(f"Successfully fetched match data for ID {match_id}")
+
+            if match_data['info']['tft_set_number'] == 12:
+                matches.append(match_data)
+                print(f"Successfully fetched match data for ID {match_id}")
+            else:
+                print("Outdated set: ", match_data['info']['tft_set_number'])
+                continue
         else:
             print(f"Error fetching match data for ID {match_id}: {response.status_code}")
 
