@@ -36,15 +36,61 @@ def get_tiered():
             with open(f'{PLAYERDIR}{tier}{division}.json','w') as src:
                 json.dump(data,src,indent = 4)
 
-def get_summoner_puuids():
-    pass
+def get_summoner_puuids(fname: str):
+    puuids = []
 
-def get_match_ids():
-    pass 
+    with open(fname,'r') as src:
+        data = json.load(src)
 
-def get_match_data():
-    pass
+    for player in data:
+        puuids.append(player['puuid'])
+    return puuids
 
 
-get_untiered()
-get_tiered()
+def get_match_ids(puuids):
+    match_ids = set()
+
+    for puuid in puuids:
+        url = f'https://americas.api.riotgames.com/tft/match/v1/matches/by-puuid/{puuid}/ids?count=100'
+        headers = {
+            "X-Riot-Token": API_KEY
+        }
+
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            match_data = response.json()
+            match_ids.update(match_data)
+            print(f"Successfully fetched match data for puuid {puuid}!")
+        else:
+            print(f"Error fetching match data for puuid {puuid}: {response.status_code}")
+            print(response.json())
+        break
+
+    return list(match_ids)
+
+def get_match_data(match_ids):
+    matches = []
+
+    for match_id in match_ids:
+        url = f'https://americas.api.riotgames.com/tft/match/v1/matches/{match_id}'
+        headers = {
+            "X-Riot-Token": API_KEY
+        }
+
+        response = requests.get(url, headers=headers)
+        # Check if the request was successful
+        if response.status_code == 200:
+            match_data = response.json()
+            matches.append(match_data)
+            print(f"Successfully fetched match data for ID {match_id}")
+        else:
+            print(f"Error fetching match data for ID {match_id}: {response.status_code}")
+
+    return matches
+
+
+# get_untiered()
+# get_tiered()
+# print(get_summoner_puuids('data/players/IRONI.json'))
+# print(get_match_ids(get_summoner_puuids('data/players/IRONI.json')))
+# print(get_match_data(get_match_ids(get_summoner_puuids('data/players/IRONI.json'))))
