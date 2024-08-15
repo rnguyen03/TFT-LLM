@@ -34,3 +34,12 @@ sunfirecap
 thiefsgloves
 titansresolve
 warmogsarmor
+bfsword
+chainvest
+giantsbelt
+needlesslylargerod
+negatroncloak
+recurvebow
+sparringgloves
+tearofthegoddess
+spatula
