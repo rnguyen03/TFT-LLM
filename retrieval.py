@@ -88,9 +88,41 @@ def get_match_data(match_ids):
 
     return matches
 
+def get_comp_data(matches):
+    
+    # Initialize the list to store reformatted data
+    reformatted_data = []
+
+    # Iterate over each match and each participant in the match
+    for match in matches:
+        for participant in match['info']['participants']:
+            reformatted_data.append(reformat_participant_data(participant))
+
+    # Convert the reformatted data to a JSON string and return it
+    return json.dumps(reformatted_data, indent=4)
+
+def reformat_participant_data(participant):
+    # Reformat a single participant's data
+    return {
+        "comp": {
+            "champs": [
+                {
+                    champ['character_id']: {
+                        "items": champ['itemNames'],
+                        "tier": champ['tier'],
+                    }
+                }
+                for champ in participant['units']
+            ]
+        },
+        "augments": participant['augments'],
+        "gold_left": participant['gold_left'],
+        "last_round": participant['last_round']
+    }
 
 # get_untiered()
 # get_tiered()
 # print(get_summoner_puuids('data/players/IRONI.json'))
 # print(get_match_ids(get_summoner_puuids('data/players/IRONI.json')))
 # print(get_match_data(get_match_ids(get_summoner_puuids('data/players/IRONI.json'))))
+# print(get_comp_data(get_match_data(get_match_ids(get_summoner_puuids('data/players/IRONI.json')))))
