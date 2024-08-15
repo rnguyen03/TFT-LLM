@@ -7,14 +7,14 @@ def construct_vocabulary(sources):
         for line in lines:
             print(line.split())
             isolated = line.split()[0]
-            
-
             vocabulary_encode[isolated] = len(vocabulary_encode)
             vocabulary_decode[len(vocabulary_decode)] = isolated
     return vocabulary_encode,vocabulary_decode
 
+
 def construct_composition(sentence,vocabulary):
     pass
+
 
 def encode_composition(composition,vocabulary_encode):
     sentence = []
@@ -49,11 +49,14 @@ sample_comp = {
         }
         }
 }
+
+
 sources = [
     'vocabulary/augments.txt',
     'vocabulary/champions.txt',
     'vocabulary/augments.txt']
 enc,dec = construct_vocabulary(sources)
+
 
 sentence = encode_composition(sample_comp,enc)
 print(sentence)
